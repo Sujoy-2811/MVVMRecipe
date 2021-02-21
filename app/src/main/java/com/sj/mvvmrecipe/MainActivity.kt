@@ -6,7 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.imageFromResource
@@ -34,12 +36,27 @@ class MainActivity : AppCompatActivity(){
                     contentScale = ContentScale.Crop,
                 )
                 Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
                     Text(
                         text = "Happy Meal",
                         style = TextStyle(
                             fontSize = TextUnit.Companion.Sp(26)
                         )
                     )
+
+                    Text(
+                            text = "$5.99",
+                            style = TextStyle(
+                                    color = Color(0xFF85bb65),
+                                    fontSize = TextUnit.Companion.Sp(17)
+                            ),
+                            modifier =  Modifier.align(Alignment.CenterVertically)
+                    )
+                    }
                     Spacer(modifier = Modifier.padding(top = 8.dp))
                     Text(
                         text = "800 calories",
@@ -48,13 +65,13 @@ class MainActivity : AppCompatActivity(){
                         )
                     )
                     Spacer(modifier = Modifier.padding(top = 8.dp))
-                    Text(
-                        text = "$5.99",
-                        style = TextStyle(
-                            color = Color(0xFF85bb65),
-                            fontSize = TextUnit.Companion.Sp(17)
-                        )
-                    )
+
+                    Button(onClick = {  },
+                            modifier =  Modifier.align(Alignment.CenterHorizontally)) {
+                        Text(text = "ORDER NOW")
+
+                    }
+
                 }
             }
         }
