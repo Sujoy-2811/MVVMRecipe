@@ -16,10 +16,13 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideRepository(
+    fun provideRecipeRepository(
         recipeService: RecipeService,
-        recipeDToMapper: RecipeDtoMapper
-    ):RecipeRepository{
-        return  RecipeRepository_Impl(recipeService , recipeDToMapper)
+        recipeMapper: RecipeDtoMapper,
+    ): RecipeRepository{
+        return RecipeRepository_Impl(
+            recipeService = recipeService,
+            mapper = recipeMapper
+        )
     }
 }

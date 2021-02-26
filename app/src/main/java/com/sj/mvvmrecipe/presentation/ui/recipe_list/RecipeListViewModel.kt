@@ -1,24 +1,33 @@
 package com.sj.mvvmrecipe.presentation.ui.recipe_list
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sj.mvvmrecipe.domain.model.Recipe
 import com.sj.mvvmrecipe.repository.RecipeRepository
+import kotlinx.coroutines.launch
 import javax.inject.Named
 
 class RecipeListViewModel
 @ViewModelInject
 constructor(
-    private val randomString:String,
-    private  val repository: RecipeRepository,
-    private @Named("auth_token") val token :String
+    private val repository: RecipeRepository,
+    @Named("auth_token") private val token: String,
 ): ViewModel(){
-    init {
-        println("ViewModel : ${randomString}")
-        println("ViewModel : ${repository}")
-        println("ViewModel : ${token}")
+
+    val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
+
+    init{
+        viewModelScope.launch {
+            val result = repository.search(
+                token = token,
+                page = 1,
+                query = "chicken"
+            )
+            recipes.value = result
+        }
     }
 
-    fun getRepo()= repository
-    fun getRandomString()= randomString
-    fun getToken() = token
 }
