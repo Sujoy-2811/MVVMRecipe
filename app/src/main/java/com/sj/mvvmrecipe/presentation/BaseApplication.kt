@@ -1,4 +1,4 @@
-package com.sj.mvvmrecipe
+package com.sj.mvvmrecipe.presentation
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

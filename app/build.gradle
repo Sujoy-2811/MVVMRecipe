@@ -83,4 +83,8 @@ dependencies {
     def hilt = "2.28-alpha"
     implementation "com.google.dagger:hilt-android:$hilt"
     kapt "com.google.dagger:hilt-android-compiler:$hilt"
+
+    def hilt_lifecycle = "1.0.0-alpha01"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle"
+    kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle"
 }
