@@ -10,44 +10,36 @@ import androidx.compose.ui.platform.AmbientContext
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.sj.mvvmrecipe.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-const val DEFAULT_RECIPE_IMAGE = R.drawable.empty_plate
-
-@ExperimentalCoroutinesApi
 @Composable
-fun loadPicture(url: String, @DrawableRes defaultImage: Int): MutableState<Bitmap?> {
+fun loadPicture(
+    url :String , @DrawableRes defaultImage : Int
+) :MutableState<Bitmap?>{
+    val bitmapSate: MutableState<Bitmap?> = mutableStateOf(null)
 
-    val bitmapState: MutableState<Bitmap?> = mutableStateOf(null)
-
-    // show default image while image loads
     Glide.with(AmbientContext.current)
         .asBitmap()
         .load(defaultImage)
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) { }
-            override fun onResourceReady(
-                resource: Bitmap,
-                transition: Transition<in Bitmap>?
-            ) {
-                bitmapState.value = resource
+        .into( object : CustomTarget<Bitmap>(){
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                bitmapSate.value = resource
             }
-        })
 
-    // get network image
+            override fun onLoadCleared(placeholder: Drawable?) {}
+
+        })
     Glide.with(AmbientContext.current)
         .asBitmap()
         .load(url)
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) { }
-            override fun onResourceReady(
-                resource: Bitmap,
-                transition: Transition<in Bitmap>?
-            ) {
-                bitmapState.value = resource
+        .into( object : CustomTarget<Bitmap>(){
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                bitmapSate.value = resource
             }
+
+            override fun onLoadCleared(placeholder: Drawable?) {}
+
         })
 
-    return bitmapState
+
+    return bitmapSate
 }
