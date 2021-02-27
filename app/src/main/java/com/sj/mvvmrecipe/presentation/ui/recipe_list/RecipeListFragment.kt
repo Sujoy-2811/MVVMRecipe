@@ -5,14 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.TextField
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.sj.mvvmrecipe.presentation.ui.components.RecipeCard
-import com.sj.mvvmrecipe.util.TAG
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 @AndroidEntryPoint
@@ -25,20 +30,26 @@ class RecipeListFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+                val recipes = viewModel.recipes.value
         return ComposeView(requireContext()).apply {
             setContent {
 
-                val recipes = viewModel.recipes.value
+               Column {
 
-                for(recipe in recipes){
-                    Log.d(TAG, "RECIPE: ${recipe.title}")
-                }
+                   val recipes = viewModel.recipes.value
+                   var query = viewModel.query
 
-                LazyColumn{
-                    itemsIndexed( items = recipes){index, recipe ->
-                        RecipeCard(recipe = recipe, onClick = { })
+                   TextField(value = query.value, onValueChange = {newVlaue->
+                       viewModel.onQueryChanged(newVlaue)
+                   })
+
+                    LazyColumn{
+                        itemsIndexed( items = recipes){index, recipe ->
+                            RecipeCard(recipe = recipe, onClick = { })
+                        }
                     }
-                }
+
+               }
             }
         }
     }

@@ -43,13 +43,11 @@ fun RecipeCard(
             recipe.featuredImage?.let { url ->
                 val image = loadPicture(url = url, defaultImage = DEFAULT_RECIPE_IMAGE ).value
                 image?.let{ img ->
-                    Image(
-                        bitmap = img.asImageBitmap() ,
+                    Image(bitmap =img.asImageBitmap(), contentDescription ="",
                         modifier = Modifier
                             .fillMaxWidth()
                             .preferredHeight(225.dp),
-                        contentScale = ContentScale.Crop,
-                    )
+                    contentScale = ContentScale.Crop)
                 }
 
             }
