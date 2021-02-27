@@ -14,7 +14,7 @@ class RecipeListViewModel
 @ViewModelInject
 constructor(
     private val repository: RecipeRepository,
-    @Named("auth_token") private val token: String,
+    private @Named("auth_token") val token: String,
 ): ViewModel(){
 
     val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())

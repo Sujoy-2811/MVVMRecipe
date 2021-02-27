@@ -3,7 +3,8 @@ package com.sj.mvvmrecipe.network.model
 import com.sj.mvvmrecipe.domain.model.Recipe
 import com.sj.mvvmrecipe.domain.util.DomainMapper
 
-class RecipeDtoMapper : DomainMapper<RecipeDto, Recipe>{
+class RecipeDtoMapper : DomainMapper<RecipeDto, Recipe> {
+
     override fun mapToDomainModel(model: RecipeDto): Recipe {
         return Recipe(
             id = model.pk,
@@ -14,11 +15,12 @@ class RecipeDtoMapper : DomainMapper<RecipeDto, Recipe>{
             sourceUrl = model.sourceUrl,
             description = model.description,
             cookingInstructions = model.cookingInstructions,
-            ingredients = model.ingredients?: listOf(),
+            ingredients = model.ingredients.orEmpty(),
             dateAdded = model.dateAdded,
             dateUpdated = model.dateUpdated,
         )
     }
+
     override fun mapFromDomainModel(domainModel: Recipe): RecipeDto {
         return RecipeDto(
             pk = domainModel.id,
@@ -42,5 +44,6 @@ class RecipeDtoMapper : DomainMapper<RecipeDto, Recipe>{
     fun fromDomainList(initial: List<Recipe>): List<RecipeDto>{
         return initial.map { mapFromDomainModel(it) }
     }
+
 
 }
