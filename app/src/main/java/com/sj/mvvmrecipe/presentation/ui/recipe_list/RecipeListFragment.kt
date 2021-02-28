@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,10 +20,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.sj.mvvmrecipe.presentation.ui.components.RecipeCard
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.sj.mvvmrecipe.presentation.ui.components.FoodCategoryChip
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -48,29 +51,44 @@ class RecipeListFragment: Fragment() {
                    Surface(
                        modifier = Modifier.fillMaxWidth(),
                        elevation = 8.dp,
-                       color = MaterialTheme.colors.primary) {
-                       Row(modifier = Modifier.fillMaxWidth()) {
+                       color = Color.White
+                   ) {
+                       Column{
+                           Row(modifier = Modifier.fillMaxWidth()) {
 
-                           TextField(modifier = Modifier
-                               .fillMaxWidth(0.9f)
-                               .padding(8.dp),value = query.value,
-                               onValueChange = {newVlaue->
-                               viewModel.onQueryChanged(newVlaue)
-                           },label = { Text(text = "Search") },
-                           keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                           imeAction = ImeAction.Search), leadingIcon = { Icon(
-                                   imageVector = Icons.Filled.Search,
-                                   contentDescription = "Search"
-                               ) },
-                           onImeActionPerformed = { action , softkeyboardController ->
-                               if (action == ImeAction.Search){
-                                   viewModel.newSearch(query.value)
-                                   softkeyboardController?.hideSoftwareKeyboard()
+                               TextField(modifier = Modifier
+                                   .fillMaxWidth(0.9f)
+                                   .padding(8.dp),value = query.value,
+                                   onValueChange = {newVlaue->
+                                       viewModel.onQueryChanged(newVlaue)
+                                   },label = { Text(text = "Search") },
+                                   keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                                       imeAction = ImeAction.Search), leadingIcon = { Icon(
+                                       imageVector = Icons.Filled.Search,
+                                       contentDescription = "Search"
+                                   ) },
+                                   onImeActionPerformed = { action , softkeyboardController ->
+                                       if (action == ImeAction.Search){
+                                           viewModel.newSearch(query.value)
+                                           softkeyboardController?.hideSoftwareKeyboard()
+                                       }
+                                   }, textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
+                                   backgroundColor = MaterialTheme.colors.surface
+
+                               )
+                           }
+
+                           ScrollableRow(modifier = Modifier.fillMaxWidth()) {
+                               for (item in getAllFoodCategory()){
+                                    FoodCategoryChip(catergoy = item.value,
+                                        onExecuteSearch = {
+                                            viewModel.onQueryChanged(it)
+                                            viewModel.newSearch(it)
+                                        })
                                }
-                           }, textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
-                               backgroundColor = MaterialTheme.colors.surface
 
-                           )
+                           }
+
                        }
 
                    }
