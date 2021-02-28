@@ -19,6 +19,8 @@ constructor(
 
     val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
     val query = mutableStateOf("")
+    var categoryScrollPosition =0f
+
     init{
         newSearch("Chicken")
     }
@@ -36,5 +38,9 @@ constructor(
 
     fun onQueryChanged(query : String){
         this.query.value =query
+    }
+
+    fun onChangeCategoryScrollPosition(position : Float){
+        categoryScrollPosition = position
     }
 }

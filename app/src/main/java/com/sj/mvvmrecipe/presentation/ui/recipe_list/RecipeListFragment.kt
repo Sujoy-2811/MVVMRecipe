@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,10 +27,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.sj.mvvmrecipe.presentation.ui.components.FoodCategoryChip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class RecipeListFragment: Fragment() {
 
@@ -78,12 +83,18 @@ class RecipeListFragment: Fragment() {
                                )
                            }
 
-                           ScrollableRow(modifier = Modifier.fillMaxWidth()) {
+                           val scrollState = rememberScrollState()
+                           val scope = rememberCoroutineScope()
+                           ScrollableRow(modifier = Modifier.fillMaxWidth(),
+                           scrollState = scrollState
+                           ) {
                                for (item in getAllFoodCategory()){
+                                   scope.launch{ scrollState.scrollTo(viewModel.categoryScrollPosition) }
                                     FoodCategoryChip(catergoy = item.value,
                                         onExecuteSearch = {
                                             viewModel.onQueryChanged(it)
                                             viewModel.newSearch(it)
+                                            viewModel.onChangeCategoryScrollPosition(scrollState.value)
                                         })
                                }
 
