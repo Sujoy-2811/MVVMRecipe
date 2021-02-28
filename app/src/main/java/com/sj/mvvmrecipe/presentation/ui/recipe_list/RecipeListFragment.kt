@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -17,25 +14,19 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.sj.mvvmrecipe.presentation.ui.components.CircularIndeterminateProgressBar
 import com.sj.mvvmrecipe.presentation.ui.components.RecipeCard
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.sj.mvvmrecipe.presentation.ui.components.FoodCategoryChip
+import com.sj.mvvmrecipe.presentation.ui.components.SearchAppBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class RecipeListFragment: Fragment() {
+class RecipeListFragment : Fragment() {
 
     private val viewModel: RecipeListViewModel by viewModels()
 
@@ -44,74 +35,41 @@ class RecipeListFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-                val recipes = viewModel.recipes.value
         return ComposeView(requireContext()).apply {
             setContent {
 
-                   val recipes = viewModel.recipes.value
-                   var query = viewModel.query
-
-               Column {
-
-                   Surface(
-                       modifier = Modifier.fillMaxWidth(),
-                       elevation = 8.dp,
-                       color = Color.White
-                   ) {
-                       Column{
-                           Row(modifier = Modifier.fillMaxWidth()) {
-
-                               TextField(modifier = Modifier
-                                   .fillMaxWidth(0.9f)
-                                   .padding(8.dp),value = query.value,
-                                   onValueChange = {newVlaue->
-                                       viewModel.onQueryChanged(newVlaue)
-                                   },label = { Text(text = "Search") },
-                                   keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                                       imeAction = ImeAction.Search), leadingIcon = { Icon(
-                                       imageVector = Icons.Filled.Search,
-                                       contentDescription = "Search"
-                                   ) },
-                                   onImeActionPerformed = { action , softkeyboardController ->
-                                       if (action == ImeAction.Search){
-                                           viewModel.newSearch(query.value)
-                                           softkeyboardController?.hideSoftwareKeyboard()
-                                       }
-                                   }, textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
-                                   backgroundColor = MaterialTheme.colors.surface
-
-                               )
-                           }
-
-                           val scrollState = rememberScrollState()
-                           val scope = rememberCoroutineScope()
-                           ScrollableRow(modifier = Modifier.fillMaxWidth(),
-                           scrollState = scrollState
-                           ) {
-                               for (item in getAllFoodCategory()){
-                                   scope.launch{ scrollState.scrollTo(viewModel.categoryScrollPosition) }
-                                    FoodCategoryChip(catergoy = item.value,
-                                        onExecuteSearch = {
-                                            viewModel.onQueryChanged(it)
-                                            viewModel.newSearch(it)
-                                            viewModel.onChangeCategoryScrollPosition(scrollState.value)
-                                        })
-                               }
-
-                           }
-
-                       }
-
-                   }
+                val recipes = viewModel.recipes.value
+                var query = viewModel.query.value
+                val selectedCategory = viewModel.selectedCategory.value
+                val categoryScrollPosition = viewModel.categoryScrollPosition
+                val loading = viewModel.loading.value
 
 
-                    LazyColumn{
-                        itemsIndexed( items = recipes){index, recipe ->
-                            RecipeCard(recipe = recipe, onClick = { })
+                Column {
+
+                    SearchAppBar(
+                        query = query,
+                        onQueryChanged = viewModel::onQueryChanged,
+                        onExecuteSearch = viewModel::newSearch,
+                        categories = getAllFoodCategory(),
+                        selectedCategory = selectedCategory,
+                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                        scrollPosition = categoryScrollPosition,
+                        onChangeScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                    )
+
+
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LazyColumn {
+                            itemsIndexed(items = recipes) { index, recipe ->
+                                RecipeCard(recipe = recipe, onClick = { })
+                            }
                         }
+
+                        CircularIndeterminateProgressBar(isDisplayed = loading)
                     }
 
-               }
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sj.mvvmrecipe.domain.model.Recipe
 import com.sj.mvvmrecipe.repository.RecipeRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Named
 
@@ -18,29 +19,62 @@ constructor(
 ): ViewModel(){
 
     val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
-    val query = mutableStateOf("")
-    var categoryScrollPosition =0f
 
-    init{
-        newSearch("Chicken")
+    val query = mutableStateOf("")
+
+    val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
+
+    var categoryScrollPosition: Float = 0f
+
+    val loading = mutableStateOf(false)
+
+    init {
+        newSearch()
     }
 
-    fun newSearch(query : String){
+    fun newSearch(){
         viewModelScope.launch {
+            loading.value = true
+            resetSearchState()
+            delay(2000)
             val result = repository.search(
                 token = token,
                 page = 1,
-                query = query
+                query = query.value
             )
             recipes.value = result
+            loading.value = false
+
         }
     }
 
-    fun onQueryChanged(query : String){
-        this.query.value =query
+    private  fun resetSearchState(){
+        recipes.value = listOf()
+        if (selectedCategory.value?.value != query.value)
+            clearSelectwdCategory()
+    }
+    private fun clearSelectwdCategory(){
+        selectedCategory.value = null
     }
 
-    fun onChangeCategoryScrollPosition(position : Float){
+    fun onQueryChanged(query: String){
+        this.query.value = query
+    }
+
+    fun onSelectedCategoryChanged(category: String){
+        val newCategory = getFoodCategory(category)
+        selectedCategory.value = newCategory
+        onQueryChanged(category)
+    }
+
+    fun onChangeCategoryScrollPosition(position: Float){
         categoryScrollPosition = position
     }
 }
+
+
+
+
+
+
+
