@@ -4,21 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.sj.mvvmrecipe.presentation.ui.components.CircularIndeterminateProgressBar
+import com.sj.mvvmrecipe.presentation.ui.components.LoadingRecipeListShimmer
 import com.sj.mvvmrecipe.presentation.ui.components.RecipeCard
 import com.sj.mvvmrecipe.presentation.ui.components.SearchAppBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +34,7 @@ class RecipeListFragment : Fragment() {
             setContent {
 
                 val recipes = viewModel.recipes.value
-                var query = viewModel.query.value
+                val query = viewModel.query.value
                 val selectedCategory = viewModel.selectedCategory.value
                 val categoryScrollPosition = viewModel.categoryScrollPosition
                 val loading = viewModel.loading.value
@@ -60,12 +55,17 @@ class RecipeListFragment : Fragment() {
 
 
                     Box(modifier = Modifier.fillMaxSize()) {
-                        LazyColumn {
-                            itemsIndexed(items = recipes) { index, recipe ->
-                                RecipeCard(recipe = recipe, onClick = { })
+                        if (loading){
+                            LoadingRecipeListShimmer(imageHeight = 250.dp,)
+                        }else{
+                            LazyColumn {
+                                itemsIndexed(
+                                    items = recipes
+                                ) { index, recipe ->
+                                    RecipeCard(recipe = recipe, onClick = {})
+                                }
                             }
                         }
-
                         CircularIndeterminateProgressBar(isDisplayed = loading)
                     }
 

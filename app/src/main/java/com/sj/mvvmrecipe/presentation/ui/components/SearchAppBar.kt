@@ -19,9 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.sj.mvvmrecipe.presentation.ui.recipe_list.FoodCategory
-import com.sj.mvvmrecipe.presentation.ui.recipe_list.getAllFoodCategory
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun SearchAppBar(
