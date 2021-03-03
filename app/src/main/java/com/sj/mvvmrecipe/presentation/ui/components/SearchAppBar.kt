@@ -1,17 +1,16 @@
 package com.sj.mvvmrecipe.presentation.ui.components
 
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -31,14 +30,15 @@ fun SearchAppBar(
     onSelectedCategoryChanged: (String) -> Unit,
     scrollPosition: Float,
     onChangeScrollPosition: (Float) -> Unit,
+    onToggleTheme : () -> Unit
 ){
     Surface(
         modifier = Modifier.fillMaxWidth(),
         elevation = 8.dp,
-        color = Color.White
+        color = MaterialTheme.colors.surface
     ) {
         Column{
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
 
                 TextField(modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -60,12 +60,18 @@ fun SearchAppBar(
                     backgroundColor = MaterialTheme.colors.surface
 
                 )
+                IconButton(onClick = onToggleTheme , modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    Icon(Icons.Filled.MoreVert , contentDescription = null)
+
+                }
             }
 
             val scrollState = rememberScrollState()
             val scope = rememberCoroutineScope()
-            ScrollableRow(modifier = Modifier.fillMaxWidth()
-                .padding(start = 8.dp , bottom = 8.dp),
+            ScrollableRow(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, bottom = 8.dp),
                 scrollState = scrollState
             ) {
                 scope.launch { scrollState.scrollTo(scrollPosition) }
