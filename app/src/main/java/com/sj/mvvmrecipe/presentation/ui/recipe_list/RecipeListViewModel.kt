@@ -35,11 +35,23 @@ constructor(
     var recipeListScrollPostion =0
 
     init {
-        newSearch()
+        onTriggerEvent(RecipeListEvent.NewSearchEvent)
     }
 
-    fun newSearch(){
+    fun onTriggerEvent( event : RecipeListEvent){
         viewModelScope.launch {
+            try {
+                when(event){
+                    is RecipeListEvent.NewSearchEvent -> newSearch()
+                    is RecipeListEvent.NextPageEvent -> nextPage()
+                }
+            }catch (e : Exception){
+                Log.d(TAG , " onTriggerEvent : Exeption : ${e}, ${e.cause}")
+            }
+        }
+    }
+
+    private suspend  fun newSearch(){
             loading.value = true
             resetSearchState()
             delay(2000)
@@ -51,11 +63,9 @@ constructor(
             recipes.value = result
             loading.value = false
 
-        }
     }
 
-    fun nextPage(){
-        viewModelScope.launch {
+    private suspend fun nextPage(){
             if ((recipeListScrollPostion+1) >= (page.value * PAGE_SIZE)
             ){
                 loading.value = true
@@ -73,7 +83,6 @@ constructor(
                 }
                 loading.value =false
             }
-        }
     }
 
 
