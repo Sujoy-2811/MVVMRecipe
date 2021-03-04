@@ -1,5 +1,6 @@
 package com.sj.mvvmrecipe.presentation.ui.recipe_list
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.lifecycle.ViewModelInject
@@ -7,9 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sj.mvvmrecipe.domain.model.Recipe
 import com.sj.mvvmrecipe.repository.RecipeRepository
+import com.sj.mvvmrecipe.util.TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Named
+
+const val PAGE_SIZE = 30
 
 class RecipeListViewModel
 @ViewModelInject
@@ -27,6 +31,8 @@ constructor(
     var categoryScrollPosition: Float = 0f
 
     val loading = mutableStateOf(false)
+    val page = mutableStateOf(1)
+    var recipeListScrollPostion =0
 
     init {
         newSearch()
@@ -48,8 +54,50 @@ constructor(
         }
     }
 
+    fun nextPage(){
+        viewModelScope.launch {
+            if ((recipeListScrollPostion+1) >= (page.value * PAGE_SIZE)
+            ){
+                loading.value = true
+                incrementPage()
+                Log.d(TAG,"next page : ${page.value}")
+
+                if(page.value > 1){
+                    val result = repository.search(
+                        token = token,
+                        page = page.value,
+                        query = query.value
+                    )
+                    Log.d(TAG,"nextPage : ${result}")
+                    appendRecipes(result)
+                }
+                loading.value =false
+            }
+        }
+    }
+
+
+
+
+
+    private fun appendRecipes( recipes : List<Recipe>){
+        val current = ArrayList(this.recipes.value)
+        current.addAll(recipes)
+        this.recipes.value = current
+    }
+
+    private fun incrementPage (){
+        page.value = page.value +1
+    }
+
+    fun onChangeRecipeScrollPosition(position : Int){
+        recipeListScrollPostion = position
+    }
+
     private  fun resetSearchState(){
         recipes.value = listOf()
+        page.value =1
+        onChangeRecipeScrollPosition(0)
         if (selectedCategory.value?.value != query.value)
             clearSelectwdCategory()
     }

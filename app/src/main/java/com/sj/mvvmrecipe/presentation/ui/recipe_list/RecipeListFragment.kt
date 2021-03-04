@@ -52,6 +52,7 @@ class RecipeListFragment : Fragment() {
                     val selectedCategory = viewModel.selectedCategory.value
                     val categoryScrollPosition = viewModel.categoryScrollPosition
                     val loading = viewModel.loading.value
+                    val page = viewModel.page.value
 
                     Scaffold(
                         topBar = {
@@ -67,24 +68,22 @@ class RecipeListFragment : Fragment() {
                                 onToggleTheme = { application.toggleLightTheme()}
                             )
                         },
-                        bottomBar = {
-                                    MyBottonBar()
-                         },
-                        drawerContent = {
-                            MyDrawer()
-                         }
                     ) {
                         Box(modifier = Modifier
                             .fillMaxSize()
                             .background(color = MaterialTheme.colors.background)
                         ) {
-                            if (loading){
+                            if (loading && recipes.isEmpty()){
                                 LoadingRecipeListShimmer(imageHeight = 250.dp,)
                             }else{
                                 LazyColumn {
                                     itemsIndexed(
                                         items = recipes
                                     ) { index, recipe ->
+                                        viewModel.onChangeRecipeScrollPosition(index)
+                                        if ((index+1) >=(page * PAGE_SIZE)){
+                                            viewModel.nextPage()
+                                        }
                                         RecipeCard(recipe = recipe, onClick = {})
                                     }
                                 }
@@ -96,27 +95,5 @@ class RecipeListFragment : Fragment() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MyBottonBar(){
-    BottomNavigation(
-        elevation = 12.dp
-    ) {
-        BottomNavigationItem(icon = { Icon(Icons.Default.BrokenImage , contentDescription = null) }, selected = false, onClick = {  })
-        BottomNavigationItem(icon = { Icon(Icons.Default.Search , contentDescription = null) }, selected = true, onClick = { })
-        BottomNavigationItem(icon = { Icon(Icons.Default.Mail , contentDescription = null) }, selected = false, onClick = {  })
-
-    }
-}
-
-@Composable
-fun MyDrawer(){
-    Column {
-        Text(text = "item1")
-        Text(text = "item2")
-        Text(text = "item3")
-        Text(text = "item4")
     }
 }
