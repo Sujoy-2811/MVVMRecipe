@@ -8,7 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -48,24 +53,31 @@ class RecipeListFragment : Fragment() {
                     val categoryScrollPosition = viewModel.categoryScrollPosition
                     val loading = viewModel.loading.value
 
-
-                    Column {
-
-                        SearchAppBar(
-                            query = query,
-                            onQueryChanged = viewModel::onQueryChanged,
-                            onExecuteSearch = viewModel::newSearch,
-                            categories = getAllFoodCategory(),
-                            selectedCategory = selectedCategory,
-                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                            scrollPosition = categoryScrollPosition,
-                            onChangeScrollPosition = viewModel::onChangeCategoryScrollPosition,
-                            onToggleTheme = { application.toggleLightTheme()}
+                    Scaffold(
+                        topBar = {
+                            SearchAppBar(
+                                query = query,
+                                onQueryChanged = viewModel::onQueryChanged,
+                                onExecuteSearch = viewModel::newSearch,
+                                categories = getAllFoodCategory(),
+                                selectedCategory = selectedCategory,
+                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                                scrollPosition = categoryScrollPosition,
+                                onChangeScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                                onToggleTheme = { application.toggleLightTheme()}
                             )
-
-
-                        Box(modifier = Modifier.fillMaxSize()
-                            .background(color = MaterialTheme.colors.background)) {
+                        },
+                        bottomBar = {
+                                    MyBottonBar()
+                         },
+                        drawerContent = {
+                            MyDrawer()
+                         }
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = MaterialTheme.colors.background)
+                        ) {
                             if (loading){
                                 LoadingRecipeListShimmer(imageHeight = 250.dp,)
                             }else{
@@ -85,5 +97,26 @@ class RecipeListFragment : Fragment() {
             }
         }
     }
+}
 
+@Composable
+fun MyBottonBar(){
+    BottomNavigation(
+        elevation = 12.dp
+    ) {
+        BottomNavigationItem(icon = { Icon(Icons.Default.BrokenImage , contentDescription = null) }, selected = false, onClick = {  })
+        BottomNavigationItem(icon = { Icon(Icons.Default.Search , contentDescription = null) }, selected = true, onClick = { })
+        BottomNavigationItem(icon = { Icon(Icons.Default.Mail , contentDescription = null) }, selected = false, onClick = {  })
+
+    }
+}
+
+@Composable
+fun MyDrawer(){
+    Column {
+        Text(text = "item1")
+        Text(text = "item2")
+        Text(text = "item3")
+        Text(text = "item4")
+    }
 }
