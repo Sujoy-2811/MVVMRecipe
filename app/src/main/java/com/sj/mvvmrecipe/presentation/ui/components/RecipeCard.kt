@@ -35,7 +35,7 @@ fun RecipeCard(
                 start = 6.dp,
             )
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick, ),
         elevation = 8.dp,
     ) {
 

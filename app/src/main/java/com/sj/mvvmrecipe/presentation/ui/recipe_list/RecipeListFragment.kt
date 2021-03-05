@@ -1,6 +1,7 @@
 package com.sj.mvvmrecipe.presentation.ui.recipe_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.sj.mvvmrecipe.R
 import com.sj.mvvmrecipe.presentation.BaseApplication
 import com.sj.mvvmrecipe.presentation.ui.components.CircularIndeterminateProgressBar
 import com.sj.mvvmrecipe.presentation.ui.components.LoadingRecipeListShimmer
@@ -84,7 +87,13 @@ class RecipeListFragment : Fragment() {
                                         if ((index+1) >=(page * PAGE_SIZE)){
                                             viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
                                         }
-                                        RecipeCard(recipe = recipe, onClick = {})
+                                        RecipeCard(recipe = recipe, onClick = {
+                                            val bundle = Bundle()
+                                            bundle.putInt("recipeId" , recipe.id!!)
+                                            Log.d("Sujay", "${recipe.id}")
+                                            findNavController().navigate(R.id.viewRecipe , bundle)
+
+                                        })
                                     }
                                 }
                             }
