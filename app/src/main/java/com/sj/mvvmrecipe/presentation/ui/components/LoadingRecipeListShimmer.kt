@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sj.mvvmrecipe.presentation.ui.components.util.ShimmerAnimationDefinitions
-import com.sj.mvvmrecipe.presentation.ui.components.util.ShimmerAnimationDefinitions.*
 import com.sj.mvvmrecipe.presentation.ui.components.util.ShimmerAnimationDefinitions.AnimationState.*
 
 @Composable

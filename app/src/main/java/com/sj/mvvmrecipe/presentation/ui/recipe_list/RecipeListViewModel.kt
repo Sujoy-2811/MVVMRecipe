@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.sj.mvvmrecipe.domain.model.Recipe
 import com.sj.mvvmrecipe.repository.RecipeRepository
 import com.sj.mvvmrecipe.util.TAG
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Named
 
@@ -54,7 +53,6 @@ constructor(
     private suspend  fun newSearch(){
             loading.value = true
             resetSearchState()
-            delay(2000)
             val result = repository.search(
                 token = token,
                 page = 1,
